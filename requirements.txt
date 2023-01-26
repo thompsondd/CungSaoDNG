@@ -1,4 +1,6 @@
 pandas
 streamlit
 numpy
-matplotlib
+XlsxWriter
+deta
+python-dotenv
