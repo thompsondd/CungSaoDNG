@@ -11,7 +11,7 @@ st.set_page_config(
 watch_type = st.radio(
     "Chọn kiểu xem",
     ('Xem cá nhân', 'Xem gia đình', 'Xem tất cả'))
-    
+
 with st.form("Search"):
     years_list, index_year = get_list_time()
     if watch_type=='Xem cá nhân':
@@ -47,7 +47,7 @@ if submitted:
         data = search_family(get_all_full_name(),year_now,home)
         st.download_button(
             label="Download Excel workbook",
-            data=export_excel(data).getvalue(),
+            data=export_excel(search_family(get_all_full_name(),year_now,True)).getvalue(),
             file_name=f"Danh_sach_cung_sao_{year_now}.xlsx",
             mime="application/vnd.ms-excel")
         for key,df in data.items():
@@ -57,7 +57,7 @@ if submitted:
         data = search_family(option,year_now,home)
         st.download_button(
             label="Download Excel workbook",
-            data=export_excel(data).getvalue(),
+            data=export_excel(search_family(option,year_now,True)).getvalue(),
             file_name=f"Danh_sach_cung_sao_{year_now}.xlsx",
             mime="application/vnd.ms-excel")
         for key,df in data.items():
