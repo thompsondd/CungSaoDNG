@@ -26,10 +26,33 @@ def get_all_full_name():
 
 def get_address(family_code):
     return MetaData.fetch(query={"Family_code":family_code}).items
+def uodate_db(table,keys,update_data):
+    table.update(update_data,keys)
+def calThienCan(BOY):
+    thiencan = ["Canh","Tân","Nhâm","Quý","Giáp","Ất","Bính","Đinh","Mậu","Kỷ"]
+    return thiencan[int(str(BOY)[-1])]
+def calDiaChi(BOY):
+    diachi=["Thân","Dậu","Tuất","Hợi","Tý","Sửu","Dẫn","Mão","Thìn","Tỵ","Ngọ","Mùi"]
+    return diachi[BOY%12]
 
 def get_info_person(query,include_address,include_family_code=False):
     data = MetaData.fetch(query=query)
     data = pd.DataFrame(data.items)
+    print(data)
+    check = data[(data["CanChi"].apply(lambda x: str(x)=="None"))&(data["BOY"].apply(lambda x: str(x)!="nan"))][["key","BOY"]]
+    print(check)
+    if len(check.index.values)>0:
+        d = check.values.tolist()
+        print(d)
+        for key,boy in d:
+            update_data={
+                "CanChi":calThienCan(int(boy)),
+                "ConGiap": calDiaChi(int(boy))
+            }
+            uodate_db(MetaData,key,update_data)
+        data = MetaData.fetch(query=query)
+        data = pd.DataFrame(data.items)
+
     output_order = ["Họ và tên","Tuổi","Năm Sinh","Giới Tính"]
     new_data = data[["Full_name","Sex_code","BOY","CanChi","ConGiap"]].copy()
     new_data["Giới Tính"] = new_data["Sex_code"].apply(lambda x: "Nữ" if x==0 else "Nam")
