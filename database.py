@@ -39,7 +39,7 @@ def get_info_person(query,include_address,include_family_code=False):
     data = MetaData.fetch(query=query)
     data = pd.DataFrame(data.items)
     print(data)
-    check = data[(data["CanChi"].apply(lambda x: str(x)=="None"))&(data["BOY"].apply(lambda x: str(x)!="nan"))][["key","BOY"]]
+    check = data[(data["CanChi"].apply(lambda x: str(x)=="None"))&(data["BOY"].apply(lambda x: str(x)!="None"))][["key","BOY"]]
     print(check)
     if len(check.index.values)>0:
         d = check.values.tolist()
