@@ -4,3 +4,4 @@ numpy
 XlsxWriter
 deta
 python-dotenv
+streamlit-nested-layout
