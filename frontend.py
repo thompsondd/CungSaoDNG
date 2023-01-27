@@ -7,36 +7,37 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-watch_type = st.radio(
-    "Chọn kiểu xem",
-    ('Xem cá nhân', 'Xem gia đình', 'Xem tất cả'))
-
-with st.form("Search"):
-    years_list, index_year = get_list_time()
-    if watch_type=='Xem cá nhân':
-        col1,col2 = st.columns(2)
-        with col1:
-            option = st.selectbox(  "Tên người cần tra sao hạn",
-                                tuple(get_all_full_name()))
-            home = st.checkbox("Bao gồm địa chỉ nhà")
-        with col2:
+c1,c2 = st.columns(2)
+with c1:
+    watch_type = st.radio(
+        "Chọn kiểu xem",
+        ('Xem cá nhân', 'Xem gia đình', 'Xem tất cả'))
+with c2:
+    with st.form("Search"):
+        years_list, index_year = get_list_time()
+        if watch_type=='Xem cá nhân':
+            col1,col2 = st.columns(2)
+            with col1:
+                option = st.selectbox(  "Tên người cần tra sao hạn",
+                                    tuple(get_all_full_name()))
+                home = st.checkbox("Bao gồm địa chỉ nhà")
+            with col2:
+                year_now = st.selectbox("Năm hiện tại",
+                                    tuple(years_list), index=index_year)
+        elif watch_type=='Xem gia đình':
+            col1,col2 = st.columns(2)
+            with col1:
+                option = st.multiselect(  "Tên người cần tra sao hạn",
+                                    tuple(get_all_full_name()))
+                home = st.checkbox("Bao gồm địa chỉ nhà")
+            with col2:
+                year_now = st.selectbox("Năm hiện tại",
+                                    tuple(years_list), index=index_year)
+        else:
             year_now = st.selectbox("Năm hiện tại",
-                                tuple(years_list), index=index_year)
-    elif watch_type=='Xem gia đình':
-        col1,col2 = st.columns(2)
-        with col1:
-            option = st.multiselect(  "Tên người cần tra sao hạn",
-                                tuple(get_all_full_name()))
+                                    tuple(years_list), index=index_year)
             home = st.checkbox("Bao gồm địa chỉ nhà")
-        with col2:
-            year_now = st.selectbox("Năm hiện tại",
-                                tuple(years_list), index=index_year)
-    else:
-        year_now = st.selectbox("Năm hiện tại",
-                                tuple(years_list), index=index_year)
-        home = st.checkbox("Bao gồm địa chỉ nhà")
-    submitted = st.form_submit_button("Tra cứu")
+        submitted = st.form_submit_button("Tra cứu")
 
 
 if submitted:
