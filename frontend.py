@@ -2,7 +2,7 @@ import streamlit as st
 from backend import *
 
 st.set_page_config(
-    page_title="Website Tra Cứu Sao Hạn Của Đăng",
+    page_title="Website Tra Cứu Sao Hạn Của Đăng Nguyễn",
     page_icon="🧊",
     layout="wide",
     initial_sidebar_state="expanded"
