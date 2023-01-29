@@ -104,11 +104,10 @@ def search_family(list_name,year_selected,include_address=False):
         dataframe["Số Tuổi"] = ages
         dataframe=dataframe.sort_values("Số Tuổi",ascending=False)
         dataframe["Năm Sinh"] =  dataframe["Năm Sinh"].apply(lambda x: str(int(x)) if str(x)!="nan" else None)
-        dataframe["Số Tuổi"] =  dataframe["Số Tuổi"].apply(lambda x: str(int(x)) if str(x)!="nan" else None)
         dataframe.fillna("",inplace=True)
-
+        
         key = dataframe[dataframe["Họ và tên"].apply(lambda x: x in list_name)].sort_values("Số Tuổi",ascending=False)["Họ và tên"].values[0]
-        #key = dataframe[dataframe["Số Tuổi"]==str(int(max(ages)))]["Họ và tên"].values[0]
+        dataframe["Số Tuổi"] =  dataframe["Số Tuổi"].apply(lambda x: str(int(x)) if str(x)!="nan" else None)
         output.update({key:dataframe[output_order].copy()})
     return  output
 
