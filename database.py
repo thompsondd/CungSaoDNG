@@ -4,8 +4,9 @@ from dotenv import load_dotenv
 import streamlit as st
 import os
 
-load_dotenv(".env")
+
 try:
+    load_dotenv(".env")
     DETA_KEY = os.getenv("DETA_KEY")
 except:
     DETA_KEY = st.secrets["DETA_KEY"]
