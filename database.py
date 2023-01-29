@@ -20,18 +20,20 @@ DataFiles = deta.Drive("DataFiles")
 def _get_file(name):
     return DataFiles.get(name)
 
-based_data = pd.read_csv(_get_file("Info.csv"))
+#based_data = pd.read_csv(_get_file("Info.csv"))
 
 def get_all_full_name():
-    return based_data["Full_name"].values.tolist()
+    return pd.DataFrame(MetaData.fetch().items)["Full_name"].values.tolist()
 
 def get_address(family_code):
     return MetaData.fetch(query={"Family_code":family_code}).items
 def uodate_db(table,keys,update_data):
     table.update(update_data,keys)
+
 def calThienCan(BOY):
     thiencan = ["Canh","Tân","Nhâm","Quý","Giáp","Ất","Bính","Đinh","Mậu","Kỷ"]
     return thiencan[int(str(BOY)[-1])]
+
 def calDiaChi(BOY):
     diachi=["Thân","Dậu","Tuất","Hợi","Tý","Sửu","Dẫn","Mão","Thìn","Tỵ","Ngọ","Mùi"]
     return diachi[BOY%12]
@@ -39,7 +41,7 @@ def calDiaChi(BOY):
 def get_info_person(query,include_address,include_family_code=False):
     data = MetaData.fetch(query=query)
     data = pd.DataFrame(data.items)
-    check = data[(data["CanChi"].apply(lambda x: str(x)=="None"))&(data["BOY"].apply(lambda x: str(x)!="None"))][["key","BOY"]]
+    check = data[(data["CanChi"].apply(lambda x: str(x) in ["None",""," "]))&(data["BOY"].apply(lambda x: str(x) not in ["None",""," "]))][["key","BOY"]]
     if len(check.index.values)>0:
         d = check.values.tolist()
         for key,boy in d:
