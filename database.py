@@ -15,7 +15,7 @@ deta = Deta(DETA_KEY)
 MetaData = deta.Base("MetaData")
 AddressInfo = deta.Base("AddressInfo")
 DataFiles = deta.Drive("DataFiles")
-
+LoginData = deta.Base("LoginData")
 
 def _get_file(name):
     return DataFiles.get(name)
