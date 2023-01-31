@@ -2,6 +2,7 @@ import streamlit as st
 from backend import *
 import streamlit_nested_layout
 import streamlit_authenticator as stauth
+from streamlit_option_menu import option_menu
 
 st.set_page_config(
     page_title="Website Tra Cứu Sao Hạn Của Đăng Nguyễn",
@@ -18,9 +19,13 @@ hashed_passwords = []
 
 c1,c2 = st.columns([1,5])
 with c1:
-    watch_type = st.radio(
-        "Chọn kiểu xem",
-        ('Xem cá nhân', 'Xem gia đình', 'Xem tất cả'))
+    watch_type = option_menu(
+        menu_title="Chọn kiểu xem",
+        options=['Xem cá nhân', 'Xem gia đình', 'Xem tất cả'],
+        icons=["person-circle","people-fill","person-lines-fill"],
+        menu_icon= "eye",
+        default_index=0
+        )
 with c2:
     with st.form("Search"):
         years_list, index_year = get_list_time()
@@ -50,26 +55,31 @@ with c2:
 
 
 if submitted:
-    if watch_type=='Xem cá nhân':
-        data = search_one_person({"Full_name":option},year_now,home)
-        st.table(data)
-    elif  watch_type=='Xem tất cả':
-        data = search_family(get_all_full_name(),year_now,home)
-        st.download_button(
-            label="Download Excel workbook",
-            data=export_excel(search_family(get_all_full_name(),year_now,True)).getvalue(),
-            file_name=f"Danh_sach_cung_sao_{year_now}.xlsx",
-            mime="application/vnd.ms-excel")
-        for key,df in data.items():
-            with st.expander(key):
-                st.table(df)
-    elif  watch_type=='Xem gia đình':
-        data = search_family(option,year_now,home)
-        st.download_button(
-            label="Download Excel workbook",
-            data=export_excel(search_family(option,year_now,True)).getvalue(),
-            file_name=f"Danh_sach_cung_sao_{year_now}.xlsx",
-            mime="application/vnd.ms-excel")
-        for key,df in data.items():
-            with st.expander(key):
-                st.table(df)
+    if len(option)<1:
+            st.error('Vui lòng chọn tên người muốn tra cứu', icon="🚨")
+    else:
+        if watch_type=='Xem cá nhân':
+            data = search_one_person({"Full_name":option},year_now,home)
+            st.table(data)
+        elif  watch_type=='Xem tất cả':
+            if len(option)<1:
+                st.error('Vui lòng chọn tên người muốn tra cứu', icon="🚨")
+            data = search_family(get_all_full_name(),year_now,home)
+            st.download_button(
+                label="Download Excel workbook",
+                data=export_excel(search_family(get_all_full_name(),year_now,True)).getvalue(),
+                file_name=f"Danh_sach_cung_sao_{year_now}.xlsx",
+                mime="application/vnd.ms-excel")
+            for key,df in data.items():
+                with st.expander(key):
+                    st.table(df)
+        elif  watch_type=='Xem gia đình':
+            data = search_family(option,year_now,home)
+            st.download_button(
+                label="Download Excel workbook",
+                data=export_excel(search_family(option,year_now,True)).getvalue(),
+                file_name=f"Danh_sach_cung_sao_{year_now}.xlsx",
+                mime="application/vnd.ms-excel")
+            for key,df in data.items():
+                with st.expander(key):
+                    st.table(df)
