@@ -70,7 +70,7 @@ if submitted:
             mime="application/vnd.ms-excel")
         for key,df in data.items():
             with st.expander(key):
-                st.table(df)
+                st.table(df.reset_index(drop=True))
     elif  watch_type=='Xem gia đình':
         if len(option)<1:
             st.error('Vui lòng chọn tên người muốn tra cứu', icon="🚨")
@@ -83,4 +83,4 @@ if submitted:
                 mime="application/vnd.ms-excel")
             for key,df in data.items():
                 with st.expander(key):
-                    st.table(df)
+                    st.table(df.reset_index(drop=True))
