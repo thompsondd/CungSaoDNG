@@ -1,8 +1,8 @@
 import streamlit as st
-from backend import *
+from backend.main_backend import *
 import streamlit_nested_layout
-import streamlit_authenticator as stauth
 from streamlit_option_menu import option_menu
+
 
 st.set_page_config(
     page_title="Website Tra Cứu Sao Hạn Của Đăng Nguyễn",
@@ -10,12 +10,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-names = ["Peter Parker"]
-usernames = ["pparker"]
-hashed_passwords = []
-
-#stauth.Authenticate(names,usernames,hashed_passwords)
 
 c1,c2 = st.columns([1,5])
 with c1:
