@@ -5,5 +5,4 @@ XlsxWriter
 deta
 python-dotenv
 streamlit-nested-layout
-streamlit-authenticator
 streamlit-option-menu

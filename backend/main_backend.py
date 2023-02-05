@@ -1,9 +1,10 @@
-from database import * #get_all_full_name
+from .database import * #get_all_full_name
 import time
 import xlsxwriter
 import numpy as np
 from io import BytesIO
-
+from dotenv import load_dotenv
+import streamlit as st
 
 sao=[   "Thái Âm", "Thái Dương", "Mộc Đức",
         "Thổ Tú", "Vân Hớn", "Thủy Diệu",
@@ -169,3 +170,63 @@ def export_excel(data):
         worksheet.set_column(i, i, width+7)
     workbook.close()
     return output
+
+def send_email_otp(otp,reciver,name_reciver):
+    import smtplib, ssl
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+
+    try:
+        load_dotenv(".env")
+        gusername = os.getenv("gmail_username")
+        gpassword = os.getenv("gmail_password")
+        app_pass = os.getenv("gmail_app_pass")
+    except:
+        gusername = st.secrets["gmail_username"]
+        gpassword = st.secrets["gmail_password"]
+        app_pass = st.secrets["gmail_app_pass"]
+
+    smtp_server = "smtp.gmail.com"
+    port = 587  # For starttls
+    sender_email = gusername
+    password = app_pass
+    print(f"sender_email:{sender_email}")
+    print(f"password:{app_pass}")
+    receiver_email = reciver
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "[DNG Tra Sao Hạn] Mã OTP xác thực"
+    message["From"] = sender_email
+    message["To"] = receiver_email
+    # Create a secure SSL context
+    context = ssl.create_default_context()
+    html = """\
+    <html>
+    <body>
+        <p>Xin chào,{name}
+        Đây là mã OTP của bạn: <b>{OTP}</b><br>
+        <a href="http://www.realpython.com">Real Python</a>
+        has many great tutorials
+        </p>
+    </body>
+    </html>
+    """.format(OTP=otp, name=name_reciver)
+    part2 = MIMEText(html, "html")
+    message.attach(part2)
+    # Try to log in to server and send email
+    try:
+        server = smtplib.SMTP(smtp_server,port)
+        server.ehlo() # Can be omitted
+        server.starttls(context=context) # Secure the connection
+        server.ehlo() # Can be omitted
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, message.as_string())
+        return True
+    except Exception as e:
+        # Print any error messages to stdout
+        print(e)
+        #server.quit() 
+        return False
+    finally:
+        server.quit() 
+        

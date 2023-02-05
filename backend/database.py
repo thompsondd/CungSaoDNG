@@ -2,8 +2,7 @@ from deta import Deta
 import pandas as pd
 from dotenv import load_dotenv
 import streamlit as st
-import os
-
+import os, math, random, hashlib
 
 try:
     load_dotenv(".env")
@@ -17,17 +16,57 @@ AddressInfo = deta.Base("AddressInfo")
 DataFiles = deta.Drive("DataFiles")
 LoginData = deta.Base("LoginData")
 
-def _get_file(name):
-    return DataFiles.get(name)
+################# Login utils ####################
+def get_pass():
+    return pd.DataFrame(LoginData.fetch().items)
 
-#based_data = pd.read_csv(_get_file("Info.csv"))
+def auth(username,password):
+    try:
+        return LoginData.fetch({"username":username,"password":password}).items[0]["key"]
+    except:
+        return None
 
+def get_login_data(type,value):
+    try:
+        LoginData.fetch({type:value}).items[0]["key"]
+    except:
+        return None
+
+def vertify_fp(p1,p2,c=2):
+    a = MetaData.fetch([{"Full_name":p1},{"Full_name":p2}]).count == c and p1!=p2
+    print(f"vertify - {a} -: {p1} - {p2}")
+    return a
+
+def generate_OTP(size = 5):
+    corpus= "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    generate_OTP = ""
+    length = len(corpus)
+    for i in range(size) :
+        generate_OTP+= corpus[math.floor(random.random() * length)]
+    
+    corpus = hashlib.shake_128(generate_OTP.encode()).hexdigest(5)
+    length = len(corpus)
+    generate_OTP = ""
+    for i in range(size) :
+        generate_OTP+= corpus[math.floor(random.random() * length)]
+    return generate_OTP
+
+def update_new_user(fullname,username,password,email):
+    LoginData.insert({  "key":fullname,
+                        "username":username,
+                        "password":password,
+                        "email":email})
+
+def vertify_OTP(otp):
+    pass
+################# Main utils ####################
 def get_all_full_name():
     return pd.DataFrame(MetaData.fetch().items)["Full_name"].values.tolist()
 
 def get_address(family_code):
     return MetaData.fetch(query={"Family_code":family_code}).items
-def uodate_db(table,keys,update_data):
+
+def update_db(table,keys,update_data):
     table.update(update_data,keys)
 
 def calThienCan(BOY):
@@ -49,7 +88,7 @@ def get_info_person(query,include_address,include_family_code=False):
                 "CanChi":calThienCan(int(boy)),
                 "ConGiap": calDiaChi(int(boy))
             }
-            uodate_db(MetaData,key,update_data)
+            update_db(MetaData,key,update_data)
         data = MetaData.fetch(query=query)
         data = pd.DataFrame(data.items)
 
@@ -62,7 +101,6 @@ def get_info_person(query,include_address,include_family_code=False):
     if include_address:
         all_address = AddressInfo.fetch()
         all_address = pd.DataFrame(all_address.items)
-        #print(all_address)
         new_data["Địa chỉ nhà"] = [all_address[all_address.Family_code==x]["Address"].values.tolist()[0] for x in data["Family_code"]]
         output_order+=["Địa chỉ nhà"]
     if include_family_code:
