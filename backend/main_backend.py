@@ -34,7 +34,7 @@ def calSao(gioiTinh:int,tuoi:int):
         0 - Nu
     """
     if str(tuoi)=="nan": return None
-    if tuoi<10: return None
+    if tuoi<10 or tuoi>99: return None
     bs = based_sao[gioiTinh]
     return decode_sao[bs[int(tuoi)%len(bs)-1]]
 
@@ -45,7 +45,7 @@ def calHan(gioiTinh:int,tuoi:int):
         0 - Nu
     """
     if str(tuoi)=="nan": return None
-    if tuoi<10: return None
+    if tuoi<11 or tuoi>88: return None
     bs = based_han[gioiTinh]
     a = int(tuoi)//9
     b = int(tuoi)%9
