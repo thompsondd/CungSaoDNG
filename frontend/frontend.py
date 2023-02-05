@@ -62,7 +62,7 @@ def main():
                     mime="application/vnd.ms-excel")
                 for key,df in data.items():
                     with st.expander(key):
-                        st.table(df)
+                        st.table(df.reset_index(drop=True))
             elif  watch_type=='Xem gia đình':
                 data = search_family(option,year_now,home)
                 st.download_button(
@@ -72,7 +72,7 @@ def main():
                     mime="application/vnd.ms-excel")
                 for key,df in data.items():
                     with st.expander(key):
-                        st.table(df)
+                        st.table(df.reset_index(drop=True))
 
 #if authentication_status:
 #    authenticator.logout("Đăng xuất","sidebar")
