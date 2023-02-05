@@ -62,25 +62,25 @@ if submitted:
             data = search_one_person({"Full_name":option},year_now,home)
             st.table(data)
     elif  watch_type=='Xem tất cả':
-        if len(option)<1:
-            st.error('Vui lòng chọn tên người muốn tra cứu', icon="🚨")
-        else:
-            data = search_family(get_all_full_name(),year_now,home)
-            st.download_button(
-                label="Download Excel workbook",
-                data=export_excel(search_family(get_all_full_name(),year_now,True)).getvalue(),
-                file_name=f"Danh_sach_cung_sao_{year_now}.xlsx",
-                mime="application/vnd.ms-excel")
-            for key,df in data.items():
-                with st.expander(key):
-                    st.table(df)
-    elif  watch_type=='Xem gia đình':
-        data = search_family(option,year_now,home)
+        data = search_family(get_all_full_name(),year_now,home)
         st.download_button(
             label="Download Excel workbook",
-            data=export_excel(search_family(option,year_now,True)).getvalue(),
+            data=export_excel(search_family(get_all_full_name(),year_now,True)).getvalue(),
             file_name=f"Danh_sach_cung_sao_{year_now}.xlsx",
             mime="application/vnd.ms-excel")
         for key,df in data.items():
             with st.expander(key):
                 st.table(df)
+    elif  watch_type=='Xem gia đình':
+        if len(option)<1:
+            st.error('Vui lòng chọn tên người muốn tra cứu', icon="🚨")
+        else:
+            data = search_family(option,year_now,home)
+            st.download_button(
+                label="Download Excel workbook",
+                data=export_excel(search_family(option,year_now,True)).getvalue(),
+                file_name=f"Danh_sach_cung_sao_{year_now}.xlsx",
+                mime="application/vnd.ms-excel")
+            for key,df in data.items():
+                with st.expander(key):
+                    st.table(df)
