@@ -1,12 +1,34 @@
 import streamlit as st
 import streamlit_authenticator as stauth
 from streamlit_option_menu import option_menu
+from backend.main_backend import *
+import pandas as pd
 
-names = ['John Smith','Rebecca Briggs']
-usernames = ['jsmith','rbriggs']
-passwords = ['123','456']
+#names = ['John Smith','Rebecca Briggs']
+#usernames = ['jsmith','rbriggs']
+#passwords = ['123','456']
 
-hashed_passwords = stauth.Hasher(passwords).generate()
+#hashed_passwords = stauth.Hasher(passwords).generate()
+
+try:
+    load_dotenv(".env")
+    DETA_KEY = os.getenv("DETA_KEY")
+except:
+    DETA_KEY = st.secrets["DETA_KEY"]
+deta = Deta(DETA_KEY)
+
+MetaData = deta.Base("MetaData")
+AddressInfo = deta.Base("AddressInfo")
+DataFiles = deta.Drive("DataFiles")
+LoginData = deta.Base("LoginData")
+
+def process(data):
+    d={}
+    for i in data.keys():
+        d.update({i:list(data[i].values())})
+    return d
+
+emails, names, usernames, hashed_passwords = list(process(pd.DataFrame(LoginData.fetch().items).to_dict()).values())
 
 def generate(usernames,names,passwords):
     a ={ "credentials":{"usernames":{}},
